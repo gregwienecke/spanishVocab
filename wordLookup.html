@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Word Lookup</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	
+	<style>
+		#dictionaryInput {
+			width: 300px;
+			display: inline-block;
+		}
+		
+		#dictionaryBtn {
+			width: 90px;
+			display: inline-block;
+		}
+		
+		#definitionDiv{
+			margin: 30px 0 0 0;
+		} 
+		
+
+	</style>
+</head>
+<body>
+	<header>
+		<nav>
+			<div id="links">
+				<a href="./spanish.html">Home</a>
+				<span>|</span>
+				<a href="#">Login</a>
+				<span>|</span>
+				<a href="#">Add / Remove Words</a>
+				<span>|</span>
+				<a href="./wordLookup.html">Lookup Words</a>
+				<span>|</span>
+				<a href="http://www.spanishdict.com/" target="_blank">spanishdict.com</a>
+			</div>
+		</nav>
+	</header>
+	
+	<div class="container">
+		<div>
+			<h2>Database Lookup</h2>
+		</div>
+		
+		<div>
+			<input type="text" id="dictionaryInput">
+			<button id="dictionaryBtn" onclick="getDef()">Submit</button>
+		</div>
+		
+		<div id="definitionDiv"></div>
+	</div>
+	
+	<script src="spanishDB.js"></script>
+	<script src="wordLookup.js"></script>
+</body>
+</html>

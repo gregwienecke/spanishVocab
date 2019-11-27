@@ -1,0 +1,218 @@
+/* ----- ELEMENTS ----- */
+a {
+	text-decoration: none;
+	color: dodgerBlue;
+}
+a:visited {
+	color: dodgerblue;
+}
+a:hover {
+	color: blue;
+	text-decoration: underline;
+}
+body {
+	font-family: Helvetica;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+button {
+	background-color: #666;
+	color: aquamarine;
+	border: none;
+	border-radius: 3px;
+	padding: 6px 10px 6px 10px;
+	margin-right: 5px;
+}
+button:hover {
+	cursor: pointer;
+	background-color: #555;
+}
+footer {
+	font-size: 13px;
+}
+footer p {
+	color: #666;
+}
+h1{
+	font-size: 40px;
+	font-family: 'Roboto Slab';
+}
+h2 {
+	color: #444;
+	font-family: 'Roboto Slab';
+}
+header, footer {
+	padding: 20px 0 20px 15px;
+}
+hr {
+
+}
+input {
+	font-size: 18px;
+	height: 26px;
+	border: 1px solid #bbb;
+	color: #444;
+	padding-left: 2px;
+}
+nav {
+	padding: 0 0 40px 0;
+}
+nav span {
+	color: dodgerBlue;
+}
+p, label {
+	color: #444;
+}
+
+
+/* ----- IDs ----- */
+#dbDiv {
+	display: none;
+}
+
+#currentWordDiv h4{
+	color: aqua;
+	font-family: courier new;
+	font-size: 22px;
+	background-color: black;
+	display: inline-block;
+	padding: 5px 10px 5px 10px;
+}
+#currentWordDiv {
+	margin-top: -18px;
+}
+#highScoreTextDiv {
+	margin-left: 85px;
+}
+#links {
+	display: inline-block;
+}
+#links * {
+	margin-left: 12px;
+}
+#missesDiv div {
+	width: 160px;
+	display: inline-block;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+#quiz {
+	background-color: #ddd;
+	color: #fff;
+	font-size: 34px;
+	margin-left: 3px;
+	padding: 0 6px 0 5px;
+}
+#streakDiv, #resultsDiv {
+	display: inline-block;
+}
+#streakNumber {
+	padding: 3px 8px 3px 8px;
+	font-weight: bold;
+	font-size: 20px;
+}
+
+#wordButtons {
+	display: inline-block;
+	margin: 0 0 0 70px;
+}
+
+
+/* ----- CLASSES ----- */
+.active {
+	text-decoration: underline;
+}
+.container {
+	padding: 20px 0 0 20px;
+	flex: 1;
+}
+.ib {
+	display: inline-block;
+}
+
+.intense {
+	background-color: black;
+	padding: 4px 3px 4px 8px;
+}
+
+.intenseDiv {
+	margin: 0 0 8px 0;
+}
+
+.progress{
+	width: 16.66%;
+	height: 5px;
+	display: inline-block;
+	margin-right: -4px;
+}
+.third {
+	width: 600px;
+	height: 2px;
+	background-color: aqua;
+	color: aqua;
+	border: none;
+	display: inline-block;
+}
+
+.currentListBtn, .currentLangBtn{
+	background-color: #333;
+	border-bottom: 2.5px solid aquamarine;
+}
+
+
+
+
+
+
+@media screen and (max-width: 750px){
+	
+	button {
+		margin-top: 5px;
+	}
+	
+	h2 {
+		color: #aaa;
+	}
+	
+	h4 {
+		color: white;
+		background-color: #777;
+	}
+	
+	label, #pageTitle, #quiz,
+	#highScoreDiv, #highScoreTextDiv, 
+	#missesDiv, #modeDiv {
+		display: none;
+	}
+	
+	#links > *:not(:last-child){
+		display: none;
+	}
+	
+	#currentWordDiv h4 {		
+		color: #444;
+		background-color: #ddd;
+		font-weight: bold;
+	}
+	
+	#wordButtons {
+		margin: 35px 0 0 0;
+	}
+	
+	.langBtn {
+		display: block;
+		border-bottom: none;
+	}
+	
+	.listBtn {
+		display: block;
+		border-bottom: none;
+	}
+	
+	.third {
+		background-color: #ddd;
+		color: #ddd;
+	}
+}
+
