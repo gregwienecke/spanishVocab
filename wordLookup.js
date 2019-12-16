@@ -191,7 +191,7 @@ function resetInput(){
 document.getElementById("dictionaryInput").addEventListener("keyup", function(event){
 	event.preventDefault();
 	if(event.keyCode === 13){
-		getDef();
+		getDefOpen();
 	}
 });
 
@@ -201,7 +201,34 @@ document.getElementById("dictionaryInput").addEventListener("keyup", function(ev
 
 
 
+function getDefOpen(){
 
+	var userInput = inputTextField.value.toLowerCase();
+	var keyMatches = new Array();
+	var valueMatches = new Array();
+	console.log("User input: " + userInput);
+	console.log("");
+
+	for (key in reviewWords){
+		console.log(key);
+		console.log(reviewWords[key]);
+
+		if (key.includes(userInput)){
+			console.log("substring match");
+			keyMatches.push(key);
+		} else if (reviewWords[key].includes(userInput)){
+			console.log("substring match");
+			valueMatches.push(reviewWords[key]);
+		}
+		console.log("Keys Array: " + keyMatches);
+		console.log("Values Array: " + valueMatches);
+	}
+
+
+
+
+	resetInput();
+}
 
 
 
