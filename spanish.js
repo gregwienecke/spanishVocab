@@ -11,6 +11,7 @@ window.onload = function(){
 var argMap = currentWords;
 var keysArray;
 var valuesArray;
+var sessionHistoryArray = new Array();
 function setArrays(mapToUse){
 	keysArray = Object.keys(mapToUse);
 	valuesArray = Object.values(mapToUse);
@@ -20,6 +21,8 @@ setArrays(argMap);
 
 var mode = 'span2eng';
 var currentWord = keysArray[Math.floor(Math.random()*keysArray.length)];
+addToSessionHistory(currentWord);
+console.log("To view all words used during the current session, call the viewSessionHistory() function");
 document.getElementById("currentWordDiv").innerHTML = "<h4>" + currentWord + "</h4>";
 
 
@@ -46,30 +49,42 @@ function checkAnswer(mapToUse){
 	
 	// SPANISH TO ENGLISH MODE (Key to value)--------------------------------
 	if (mode == "span2eng"){
-		// If user enters correct answer:
-		if (userInput == mapToUse[currentWord].toLowerCase()){
-			document.getElementById("resultsDiv").innerHTML = "<p style='color:#666'>Correct!</p>";
-			streak += 1;
-			renderStreak(streak);
-			renderHighScore();
-			resetCurrentWord();
-			resetInput();
+
+		//Before doing the regular check, check if a slash is involved in the answer and check accordingly:
+		//currentWord gives the *key* but user will be entering definition which is the corresponding *value* (so mapToUse[currentWord])
+		//Check if both the current word and user input contain a slash. No need to check for other cases; if user doesn't enter the right input, it will be caught in the next condition.
+		if (stringContainsOneSlash(mapToUse[currentWord]) && stringContainsOneSlash(userInput)){
+			//If yes, separate the words into respective arrays
+			var currentWordsArray = separateWords(mapToUse[currentWord]);
+			var userInputWordsArray = separateWords(userInput);
+			
+			//For each word in the currentWordsArray, check if there is a match in the userInputWordsArray.
+			var count = 0;
+			for (var i=0; i < currentWordsArray.length; i++){
+				for (var j=0; j <userInputWordsArray.length; j++){
+					if (currentWordsArray[i] == userInputWordsArray[j]){
+						count += 1;
+					}
+				}
+			}
+			//If each word in the currentWordsArray has a corresponding match, correct result, else, incorrect
+			if (count == 2){
+				runCorrectAnswerSequence();
+			} else {
+				runWrongAnswerSequence();
+			}
+		//Now do the regular check if both answers do NOT contain slashes:
+		//If the current word(s) and user input word(s) did NOT contain slashes, but they both still match:
+		} else if (userInput == mapToUse[currentWord].toLowerCase()){
+			runCorrectAnswerSequence();
 		// If user is wrong:
 		} else {
-			document.getElementById("resultsDiv").innerHTML = "<p><strong style='color:salmon'>Wrong!</strong> The correct answer was: <em style='font-size: 20px;color:#666;padding: 1px 6px 1px 6px'>" + mapToUse[currentWord] + "</em></p>";	
-			streak = 0;
-			renderStreak(streak);
-			//misses.push(currentWord + " - " + mapToUse[currentWord] + ". You said: " + userInput);
-			misses.push({"currentWord": currentWord, "translation": mapToUse[currentWord], "userInput": userInput});
-			renderMisses();
-			resetCurrentWord();
-			resetInput();
+			runWrongAnswerSequence()
 		}	
 	// ENGLISH TO SPANISH MODE (Value to key)--------------------------------
 	} else if (mode == "eng2span"){
 		var currentMatchingKeysArray = getKeysByValue(mapToUse, currentWord);
 		var cmkaToString = currentMatchingKeysArray.join(', ');
-		console.log(currentMatchingKeysArray);
 		// If user enters correct answer:
 		if (currentMatchingKeysArray.includes(userInput)){
 			document.getElementById("resultsDiv").innerHTML = "<p style='color:#666;display:inline-block'>Correct!</p>";
@@ -95,6 +110,28 @@ function checkAnswer(mapToUse){
 	}
 }
 
+// Run this function from inside of Check Answer - Spanish Mode if user has entered correct answer
+function runCorrectAnswerSequence(){
+	document.getElementById("resultsDiv").innerHTML = "<p style='color:#666'>Correct!</p>";
+	streak += 1;
+	renderStreak(streak);
+	renderHighScore();
+	resetCurrentWord();
+	resetInput();
+}
+
+// Run this function from inside of Check Answer - Spanish Mode if user has entered wrong answer
+function runWrongAnswerSequence(){
+	document.getElementById("resultsDiv").innerHTML = "<p><strong style='color:salmon'>Wrong!</strong> The correct answer was: <em style='font-size: 20px;color:#666;padding: 1px 6px 1px 6px'>" + mapToUse[currentWord] + "</em></p>";	
+	streak = 0;
+	renderStreak(streak);
+	//misses.push(currentWord + " - " + mapToUse[currentWord] + ". You said: " + userInput);
+	misses.push({"currentWord": currentWord, "translation": mapToUse[currentWord], "userInput": userInput});
+	renderMisses();
+	resetCurrentWord();
+	resetInput();
+}
+
 function resetInput(){
 	inputTextField.value = "";
 	inputTextField.focus();
@@ -103,11 +140,18 @@ function resetInput(){
 function resetCurrentWord(){
 	if (mode == 'span2eng'){
 		currentWord = keysArray[Math.floor(Math.random()*keysArray.length)];	
+		//Keep track of words in case user wants to view them for any reason
+		addToSessionHistory(currentWord);
+		
 	} else if (mode == 'eng2span'){
-		currentWord = valuesArray[Math.floor(Math.random()*valuesArray.length)];	
-	}
+		currentWord = valuesArray[Math.floor(Math.random()*valuesArray.length)];		
+		//Keep track of words in case user wants to view them for any reason
+		addToSessionHistory(currentWord);
+}
 	
 	//Check if the list of words actually has any words in it currently
+	//When user selects a db of words, if that particular list is empty, then the current word displayed on the screen will say 'undefined'
+	//This section of the function checks for that case and displays "No Words" instead
 	if (typeof currentWord == 'undefined'){
 		document.getElementById("currentWordDiv").innerHTML = "<h4>" + "No words" + "</h4>";
 	} else {
@@ -119,7 +163,6 @@ function renderMisses(){
 	document.getElementById("missesDiv").innerHTML = "<h3>Misses</h3>";
 	for (var i = 0; i < misses.length; i++){
 		//document.getElementById("missesDiv").innerHTML += "<p>"+ misses[i] +"</p>";		
-		console.log(misses[i]);
 		document.getElementById("missesDiv").innerHTML += 
 			"<div style='font-weight:bold;font-size:16px;background-color:#999;color:#fff;padding-left:5px;border-bottom:.5px solid #fff'>" + misses[i].currentWord + "</div>" +
 			"<div style='margin-left: 18px;font-weight:bold'>" + misses[i].translation + "</div>" +
@@ -136,8 +179,6 @@ function renderStreak(streakNumber){
 }
 
 function renderHighScore(){
-	console.log("streak: " + streak);
-	console.log("high score: " + highScore);
 	if (streak > highScore) {
 		highScore = streak;
 		document.getElementById("highScoreDiv").innerHTML = "<p style='background-color:aqua;padding:2px 10px 2px 7px;font-size:34px;color:#fff'>" + highScore + "</p>";
@@ -217,6 +258,72 @@ $('.listBtn').click(function(){
 		$(this).siblings().removeClass('currentListBtn');
 	}	
 });
+
+
+
+//I found that sometimes I wanted to be able to go back and see a word I had used, but forgot, so these functions are for viewing every word used during the session in the console
+function addToSessionHistory(wrd){
+	sessionHistoryArray.push(wrd);
+}
+
+function viewSessionHistory(){
+	for (var i=0; i<sessionHistoryArray.length; i+=1){
+		console.log(sessionHistoryArray[i]);
+	}
+}
+
+
+
+//These functions are for records containing two words divided by a slash so user can enter either word first and second and doesn't have to enter them in the exact order as in the db
+//*****This will only be necessary is Spanish to English mode. There are no slashes in the Spanish side to user would only ever enter a slash when entering English words.*****
+
+//First need function to check if the current db word contains one slash
+//Then need a function to compare two different strings each containing one slash (and compare the words on either side of the slash)
+
+//Check if a string contains one slash
+function stringContainsOneSlash(stringToCheckForSlash){
+	var slashCount = 0;
+	
+	for (var i=0; i < stringToCheckForSlash.length; i+=1){
+		if (stringToCheckForSlash.charAt(i) == "/"){
+			slashCount += 1;
+		}
+	}
+	
+	if (slashCount == 1){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function separateWords(wordsWithSlash){
+	var res = wordsWithSlash.split('/');
+	return res;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
