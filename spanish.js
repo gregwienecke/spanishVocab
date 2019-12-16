@@ -71,7 +71,7 @@ function checkAnswer(mapToUse){
 			if (count == 2){
 				runCorrectAnswerSequence();
 			} else {
-				runWrongAnswerSequence();
+				runWrongAnswerSequence(currentWord, mapToUse[currentWord], userInput);
 			}
 		//Now do the regular check if both answers do NOT contain slashes:
 		//If the current word(s) and user input word(s) did NOT contain slashes, but they both still match:
@@ -79,7 +79,7 @@ function checkAnswer(mapToUse){
 			runCorrectAnswerSequence();
 		// If user is wrong:
 		} else {
-			runWrongAnswerSequence()
+			runWrongAnswerSequence(currentWord, mapToUse[currentWord], userInput)
 		}	
 	// ENGLISH TO SPANISH MODE (Value to key)--------------------------------
 	} else if (mode == "eng2span"){
@@ -121,12 +121,12 @@ function runCorrectAnswerSequence(){
 }
 
 // Run this function from inside of Check Answer - Spanish Mode if user has entered wrong answer
-function runWrongAnswerSequence(){
-	document.getElementById("resultsDiv").innerHTML = "<p><strong style='color:salmon'>Wrong!</strong> The correct answer was: <em style='font-size: 20px;color:#666;padding: 1px 6px 1px 6px'>" + mapToUse[currentWord] + "</em></p>";	
+function runWrongAnswerSequence(currentWord, correctAnswer, userInput){
+	document.getElementById("resultsDiv").innerHTML = "<p><strong style='color:salmon'>Wrong!</strong> The correct answer was: <em style='font-size: 20px;color:#666;padding: 1px 6px 1px 6px'>" + correctAnswer + "</em></p>";	
 	streak = 0;
 	renderStreak(streak);
 	//misses.push(currentWord + " - " + mapToUse[currentWord] + ". You said: " + userInput);
-	misses.push({"currentWord": currentWord, "translation": mapToUse[currentWord], "userInput": userInput});
+	misses.push({"currentWord": currentWord, "translation": correctAnswer, "userInput": userInput});
 	renderMisses();
 	resetCurrentWord();
 	resetInput();
