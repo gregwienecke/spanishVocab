@@ -49,14 +49,33 @@ function checkAnswer(mapToUse){
 	
 	// SPANISH TO ENGLISH MODE (Key to value)--------------------------------
 	if (mode == "span2eng"){
-
+		var verbAtPlay = false;
+		var currentWordsArray = [];
+		var currentInputWordsArray = [];
+		
 		//Before doing the regular check, check if a slash is involved in the answer and check accordingly:
 		//currentWord gives the *key* but user will be entering definition which is the corresponding *value* (so mapToUse[currentWord])
 		//Check if both the current word and user input contain a slash. No need to check for other cases; if user doesn't enter the right input, it will be caught in the next condition.
+		
 		if (stringContainsOneSlash(mapToUse[currentWord]) && stringContainsOneSlash(userInput)){
-			//If yes, separate the words into respective arrays
-			var currentWordsArray = separateWords(mapToUse[currentWord]);
-			var userInputWordsArray = separateWords(userInput);
+			// First check if the current word is a verb to deal with the leading "to ".
+			var currentVerbs;
+			var userVerbs;
+			if (mapToUse[currentWord].substring(0,3) == "to "){
+				
+				// Remove the leading "to " and make note of it
+				currentVerbs = mapToUse[currentWord].substring(3,mapToUse[currentWord].length);
+				userVerbs = userInput.substring(3,userInput.length);
+				verbAtPlay = true;
+				
+				// Separate verbs into arrays
+				currentWordsArray = separateWords(currentVerbs);
+				userInputWordsArray = separateWords(userVerbs);
+			} else {
+				// Then if yes both have a slash, but not verbs, separate the words into respective arrays
+				currentWordsArray = separateWords(mapToUse[currentWord]);
+				userInputWordsArray = separateWords(userInput);
+			}
 			
 			//For each word in the currentWordsArray, check if there is a match in the userInputWordsArray.
 			var count = 0;
